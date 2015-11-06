@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neighborhood Map</title>
+</head>
+
+<body>
+<div id="map"></div>
+<div id="informationWindow">
+  <div id="searchBar" class="mdl-shadow--8dp">
+  
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+        <input data-bind="value: searchLocation" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="zipInput" />
+        <label class="mdl-textfield__label" for="Input">Zip Code</label>
+        <span class="mdl-textfield__error">Please enter valid US zip code.</span>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+        <input data-bind="value: searchTerm" class="mdl-textfield__input" type="text" id="termInput" />
+        <label class="mdl-textfield__label" for="Input">Search Term</label>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+        <button data-bind="click: yelpSearch" style="position:absolute; bottom: 0; right: 0" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
+        </div>
+    
+  </div>
+  <ul id="resultsCards" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: none">
+    <li class="result">
+      <div class="resultTitle">Mary S Young Park</div>
+      <div class="address"> Address <br>Address</div></li>
+    <hr>
+
+  </div>
+  </ul>
+</div>
+</div>
+</body>
+<link rel="stylesheet" type="text/css" href="css/fonts.css">
+<link rel="stylesheet" type="text/css" href="css/Material/material.min.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="js/material/material.min.js"></script>
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/knockout-3.3.0.js"></script>
+<script src="js/oauth/oauth.js"></script>
+<script src="js/oauth/sha1.js"></script>
+<script src="js/yelp.js"></script>
+<script src="js/googleMap.js"></script>
+<script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8TpKRraFO3Y2wiEw6caFzHcx4f8qclh4&callback=initializeMap">
+    </script>
+
+</html>
