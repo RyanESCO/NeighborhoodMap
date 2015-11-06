@@ -11,30 +11,51 @@
 <body>
 <div id="map"></div>
 <div id="informationWindow">
-  <div id="searchBar" class="mdl-shadow--8dp">
-  
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
-        <input data-bind="value: searchLocation" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="zipInput" />
-        <label class="mdl-textfield__label" for="Input">Zip Code</label>
-        <span class="mdl-textfield__error">Please enter valid US zip code.</span>
-      </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
-        <input data-bind="value: searchTerm" class="mdl-textfield__input" type="text" id="termInput" />
-        <label class="mdl-textfield__label" for="Input">Search Term</label>
-      </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
-        <button data-bind="click: yelpSearch" style="position:absolute; bottom: 0; right: 0" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
-        </div>
-    
+<div id="searchBar" class="mdl-shadow--8dp">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+    <input data-bind="value: searchLocation" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="5" id="zipInput" />
+    <label class="mdl-textfield__label" for="Input">Zip Code</label>
+    <span class="mdl-textfield__error">Please enter valid US zip code.</span> </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+    <input data-bind="value: searchTerm" class="mdl-textfield__input" type="text" id="termInput" />
+    <label class="mdl-textfield__label" for="Input">Search Term</label>
   </div>
-  <ul id="resultsCards" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: none">
-    <li class="result">
-      <div class="resultTitle">Mary S Young Park</div>
-      <div class="address"> Address <br>Address</div></li>
-    <hr>
+  <hr>
+  <div style="margin:10px;"><button data-bind="click: toggleFilterView" class="mdl-button mdl-js-button mdl-js-ripple-effect">Filter by Rating</button></div>
+  <div id="ratingFilter" style="margin:10px; display: none">
+    <label style="width:100%" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+      <input data-bind="checked: ratingFilter" type="radio" id="option-1" class="mdl-radio__button" name="options" value="5" checked>
+      <span class="mdl-radio__label">5</span> </label>
+    <label style="width:100%" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+    <input data-bind="checked: ratingFilter" type="radio" id="option-2" class="mdl-radio__button" name="options" value="4">
+    <span class="mdl-radio__label">4+</span></label>
+    <label style="width:100%" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+    <input data-bind="checked: ratingFilter" type="radio" id="option-3" class="mdl-radio__button" name="options" value="3">
+    <span class="mdl-radio__label">3+</span></label>
+    <label style="width:100%" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
+      <input data-bind="checked: ratingFilter" type="radio" id="option-4" class="mdl-radio__button" name="options" value="2">
+      <span class="mdl-radio__label">2+</span> </label>
+    <label style="width:100%" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-5">
+      <input data-bind="checked: ratingFilter" type="radio" id="option-5" class="mdl-radio__button" name="options" value="1">
+      <span class="mdl-radio__label">1+</span> </label>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
+    <button data-bind="click: yelpSearch" style="position:absolute; bottom: 0; right: 0" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
+  </div>
+</div>
+
+<ul id="resultsCards" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: block">
+  <li data-bind="html: numResultsHTML" style="text-align: center; margin-top: 15px; font-weight:700"></li>
+  <li data-bind="foreach: filteredResultList(), click: listItemSelect" class="result">
+    <div data-bind="text: name" class="resultTitle"></div>
+    <div data-bind="if:$data.location.display_address[0]"><div data-bind="text: location.display_address[0]" class="listData"></div></div>
+    <div data-bind="if:$data.location.display_address[1]"><div data-bind="text: location.display_address[1]" class="listData"></div></div>
+    <div data-bind="if:$data.display_phone"><div data-bind="text: display_phone "  class="listData"></div></div>
+      <hr>
+  </li>
 
   </div>
-  </ul>
+</ul>
 </div>
 </div>
 </body>
@@ -47,9 +68,8 @@
 <script src="js/oauth/oauth.js"></script>
 <script src="js/oauth/sha1.js"></script>
 <script src="js/yelp.js"></script>
-<script src="js/googleMap.js"></script>
+<script src="js/neighborhoodMap.js"></script>
 <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8TpKRraFO3Y2wiEw6caFzHcx4f8qclh4&callback=initializeMap">
     </script>
-
 </html>

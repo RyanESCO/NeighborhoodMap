@@ -6,38 +6,54 @@ var geocoder;
 var NeighborHoodMapViewModel = function(){
   var self = this;
   self.resultList = ko.observableArray();
-  self.mapMarkers = ko.observableArray();
-  self.searchLocation = ko.observable('');
-  self.searchTerm = ko.observable('');
-  self.numResults = ko.pureComputed(function() {
-    return self.resultList().length;
-  });
-  
-  self.filterResults = function() {
-    var searchWord = self.filterKeyword().toLowerCase();
-    var array = self.grouponDeals();
-    if(!searchWord) {
-      return;
-    } else {
-      self.filteredList([]);
-      for(var i=0; i < array.length; i++) {
-        if(array[i].dealName.toLowerCase().indexOf(searchWord) != -1) {
-          self.mapMarkers()[i].marker.setMap(map);
-          self.filteredList.push(array[i]);
-        } else{
-          for(var j = 0; j < array[i].dealTags.length; j++) {
-            if(array[i].dealTags[j].name.toLowerCase().indexOf(searchWord) != -1) {
-              self.mapMarkers()[i].marker.setMap(map);
-              self.filteredList.push(array[i]);
-          //otherwise hide all other markers from the map
-          } else {
-              self.mapMarkers()[i].marker.setMap(null);
-            }
-          }
-          self.dealStatus(self.numDeals() + ' deals found for ' + self.filterKeyword());
-        }
+  self.ratingFilter = ko.observable(1);
+
+  self.filteredResultList = ko.computed(function() {
+    var filterArray = [];
+    for (var i = 0; i < self.resultList().length; i++) {
+      if(self.resultList()[i].rating >= self.ratingFilter()) {
+      filterArray.push(self.resultList()[i]);
       }
     }
+    console.log('filtered out ' + (self.resultList().length - filterArray.length) + ' items');
+    return filterArray;  
+  
+  });
+  self.numResultsHTML = ko.computed(function(){
+    var HTML = '<span class="mdl-badge" data-badge="%NUM%">Results</span>';
+    HTML= HTML.replace("%NUM%",filteredResultList().length);
+    return HTML;
+    
+  });
+  self.mapMarkers = ko.observableArray();
+  self.searchLocation = ko.observable('97068');//TO DO, remove for production
+  self.maxRegionDelta = ko.observable();
+  self.searchTerm = ko.observable('parks');//TO DO, remove for production
+  self.zoomLevel = ko.computed(function(){
+    if(self.maxRegionDelta() > .5){
+      return 10;
+    }
+   else if (self.maxRegionDelta() > .22){
+     return 11; 
+    }
+    else {
+     return 12; 
+    }
+  });
+  
+  self.toggleFilterView = function() {
+    if($('#ratingFilter').css('display') === 'none'){
+      $('#ratingFilter').show('slow');
+    } else {
+      $('#ratingFilter').hide('slow'); 
+    }
+   
+  },
+  
+  
+  self.setZoom = function(){
+    map.setZoom(zoomLevel());
+    console.log("zoom set to " + zoomLevel());
   },
   
   self.yelpSearch = function(formElement){
@@ -71,7 +87,7 @@ var NeighborHoodMapViewModel = function(){
   
     var parameterMap = OAuth.getParameterMap(message.parameters);
     parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature);
-    console.log(parameterMap);
+    //console.log(parameterMap);
     
     $.ajax({
       'url': message.action,
@@ -93,14 +109,25 @@ var NeighborHoodMapViewModel = function(){
     }
     
     yelpResults = results.businesses;
+    self.resultList(results.businesses);
+    var lngDelta = results.region.span.longitude_delta;
+    var latDelta = results.region.span.latitude_delta;
     map.setCenter({lat: results.region.center.latitude, lng: results.region.center.longitude});
-    console.log({lat: results.region.center.latitude, lng: results.region.center.longitude});
-    self.displayMarkers();   
+    //console.log("Searched for " + self.searchTerm() + " in " + self.searchLocation());
+    //console.log("Number of Results: " + results.businesses.length);
+    //console.log("Lat Delta is " + results.region.span.latitude_delta);
+    //console.log("Lng Delta is " + results.region.span.longitude_delta);
+    //console.log(results);
+    var maxDelta = lngDelta > latDelta ? lngDelta : latDelta;
+    self.maxRegionDelta(maxDelta);
+    console.log(self.maxRegionDelta);
+    setZoom();
+    displayMarkers();
   };
   
   self.searchFail = function(){
     console.log('failed!'); 
-  },
+  };
   
   self.centerMap = function(zipCodeString){
     if(!geocoder) return;
@@ -108,31 +135,55 @@ var NeighborHoodMapViewModel = function(){
       if (status == google.maps.GeocoderStatus.OK) {
         //Got result, center the map and put it out there
         map.setCenter(results[0].geometry.location);
-        console.log(results[0].geometry.location);
+        //console.log(results[0].geometry.location);
       } else {
         console.log("Geocode was not successful for the following reason: " + status);
       }
     });
     
-  },
+  };
   
-  self.displayMarkers = function(){
+  // Sets the map on all markers in the array.
+  self.setMapOnAll = function (map) {
+    for (var i = 0; i < self.mapMarkers().length; i++) {
+      self.mapMarkers()[i].setMap(map);
+    }
+  };
+  
+  // Removes the markers from the map, but keeps them in the array.
+  self.clearMarkers = function(){
+    setMapOnAll(null);
+  };
+  
+  self.clearMarkerAnimations = function(){
+    for(var i = 0; i < mapMarkers().length; i++){
+      mapMarkers()[i].setAnimation(null);
+    }
+    
+  };
+  
+  self.displayMarkers = ko.computed(function(){
     //hide any existing markers
     self.clearMarkers(null);    
-    for (var i = 0; i < yelpResults.length; i++) {
-        var result = yelpResults[i];
+    for (var i = 0; i < self.filteredResultList().length; i++) {
+        var result = self.filteredResultList()[i];
         var marker = new google.maps.Marker({
           position: {lat: result.location.coordinate.latitude, lng: result.location.coordinate.longitude},
           map: map,
           animation: google.maps.Animation.DROP, 
           title: result.name
         });
+        
+        filteredResultList()[i].content = personalizeContent(result);
                 
         (function(selectedResult, marker){
           marker.addListener('click', function() {
+            clearMarkerAnimations();
+            marker.setAnimation(google.maps.Animation.BOUNCE);
             if(openWindow) {
               openWindow.close();
             }
+
             var infowindow = new google.maps.InfoWindow({
                 content: personalizeContent(selectedResult)
             });                  
@@ -145,19 +196,27 @@ var NeighborHoodMapViewModel = function(){
         self.mapMarkers().push(marker);
     }
     
-  },
+  });
   
-  // Sets the map on all markers in the array.
-  self.setMapOnAll = function (map) {
-    for (var i = 0; i < self.mapMarkers().length; i++) {
-      self.mapMarkers()[i].setMap(map);
+  self.openInfoWindow = function(){
+    if(openWindow) {
+      openWindow.close();
     }
-  },
+    
+  };
+  
+  self.listItemSelect = function(data, event){
+    var nameSelected = event.target.innerText;
+    for(var i = 0; i < filteredResultList().length; i++){
+      if( nameSelected === filteredResultList()[i].name){
+       //select marker 
+      }
+    }
+  };
+  
 
-  // Removes the markers from the map, but keeps them in the array.
-  self.clearMarkers = function () {
-    setMapOnAll(null);
-  }
+
+
 }
 
 ko.applyBindings(NeighborHoodMapViewModel);
@@ -172,7 +231,7 @@ function initializeMap() {
             lng: -122.633            
         },
         disableDefaultUI: true,
-        zoom: 12
+        zoom: zoomLevel(),
     });
    
 }

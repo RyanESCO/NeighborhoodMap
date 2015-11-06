@@ -41,6 +41,7 @@ html, body
  background-color: white;
  list-style:none;
  padding-left:0;
+ overflow-y:scroll ;
 }
 
 
@@ -65,7 +66,7 @@ html, body
   color: blue; 
   font-weight: 600;
 }
-.address {
+.listData {
  font-weight: 100;
  font-size: 12px; 
 }
