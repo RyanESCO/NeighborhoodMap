@@ -18,8 +18,7 @@ html, body
 }
 
 #searchBar {
-  width: 25%;
-  min-width: 200px;
+  width: 200px;
   background-color: white;
 }
 

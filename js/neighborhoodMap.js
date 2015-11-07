@@ -175,11 +175,13 @@ var NeighborHoodMapViewModel = function(){
         });
         
         filteredResultList()[i].content = personalizeContent(result);
+        filteredResultList()[i].marker = marker;
                 
         (function(selectedResult, marker){
           marker.addListener('click', function() {
             clearMarkerAnimations();
             marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function(){ marker.setAnimation(null); }, 1500);
             if(openWindow) {
               openWindow.close();
             }
@@ -189,6 +191,9 @@ var NeighborHoodMapViewModel = function(){
             });                  
             infowindow.open(marker.map, marker);
             openWindow = infowindow;
+            var latitude = selectedResult.location.coordinate.latitude;
+            var longitude = selectedResult.location.coordinate.longitude;
+            map.setCenter({lat: latitude, lng: longitude});
             console.log(selectedResult.name);    
           });
         })(result, marker);
@@ -198,18 +203,32 @@ var NeighborHoodMapViewModel = function(){
     
   });
   
-  self.openInfoWindow = function(){
-    if(openWindow) {
-      openWindow.close();
-    }
-    
+  self.openInfoWindow = function(marker){
+   
   };
   
   self.listItemSelect = function(data, event){
     var nameSelected = event.target.innerText;
     for(var i = 0; i < filteredResultList().length; i++){
       if( nameSelected === filteredResultList()[i].name){
-       //select marker 
+        console.log(filteredResultList()[i]);
+        var selectedResult = filteredResultList()[i];
+        var selectedMarker = selectedResult.marker;
+        var latitude = selectedResult.location.coordinate.latitude;
+        var longitude = selectedResult.location.coordinate.longitude;
+        if(openWindow) {
+          openWindow.close();
+        }
+        var infowindow = new google.maps.InfoWindow({
+          content: personalizeContent(selectedResult)
+       }); 
+
+       infowindow.open(selectedMarker.map, selectedMarker);
+       selectedMarker.setAnimation(google.maps.Animation.BOUNCE);
+       setTimeout(function(){ selectedMarker.setAnimation(null); }, 1500);
+       map.setCenter({lat: latitude, lng: longitude});
+       openWindow = infowindow;
+       console.log(filteredResultList()[i]);
       }
     }
   };
