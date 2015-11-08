@@ -1,28 +1,22 @@
-html, body
+html, 
+body
 {
     height: 100%;
     font-family: Material,sans-serif !important;
 }
 
-#map {
+.map {
 /*margin-top: 60px;*/
  min-height: 100%;
  width: 100%; 
 }
 
-#floating {
-  position: absolute;
-  top: 50%; 
-  left: 50%;
-  
-}
-
-#searchBar {
+.searchBar {
   width: 200px;
   background-color: white;
 }
 
-#searchBar .mdl-textfield {
+.searchBar .mdl-textfield {
   width: 80%;  
 }
 
@@ -33,7 +27,7 @@ html, body
   opacity: .8; 
 }
 
-#resultsList {
+.resultsList {
  width: 200px;
  height: 50%;
  background-color: white;
@@ -41,16 +35,6 @@ html, body
  padding-left:0;
  overflow-y:scroll;
 }
-
-#resultsCards {
- width: 200px;
- height: 50%;
- max-height: 400px;
- background-color: white;
- list-style:none;
- padding-left:0;
-}
-
 
 /*Cards*/
 
@@ -76,4 +60,27 @@ html, body
 .listData {
  font-weight: 100;
  font-size: 12px; 
+}
+
+.swanson {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display : none;
+  
+}
+@media (max-width: 500px){
+  .swanson {
+  display : block;  
+}
+  
+}
+
+.resultsCards {
+ width: 200px;
+ height: 50%;
+ max-height: 400px;
+ background-color: white;
+ list-style:none;
+ padding-left:0;
 }

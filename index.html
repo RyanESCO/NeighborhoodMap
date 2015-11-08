@@ -9,19 +9,19 @@
 </head>
 
 <body>
-<div id="map"></div>
+<div id="map" class="map"></div>
 <div id="informationWindow" class="infoWindow">
 <div style="position:absolute; top:0px; right: 0px"><button data-bind="click: hideInputWindow" class="mdl-button mdl-js-button mdl-button--icon">
   <i class="material-icons">clear</i>
 </button></div>
-<div id="searchBar" class="mdl-shadow--8dp">
+<div id="searchBar" class="mdl-shadow--8dp searchBar">
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
     <input data-bind="value: searchLocation" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="5" id="zipInput" />
-    <label class="mdl-textfield__label" for="Input">Zip Code</label>
+    <label class="mdl-textfield__label">Zip Code</label>
     <span class="mdl-textfield__error">Please enter valid US zip code.</span> </div>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
     <input data-bind="value: searchTerm" class="mdl-textfield__input" type="text" id="termInput" />
-    <label class="mdl-textfield__label" for="Input">Search Term</label>
+    <label class="mdl-textfield__label">Search Term</label>
   </div>
   <hr>
   <div style="margin:10px;"><button data-bind="click: toggleFilterView" class="mdl-button mdl-js-button mdl-js-ripple-effect">Filter by Rating</button></div>
@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<ul id="resultsList" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: block">
+<ul id="resultsList" class="materialDesign mdl-shadow--8dp resultsList" style="margin-top:20px; display: block">
   <li data-bind="html: numResultsHTML" style="text-align: center; margin-top: 15px; font-weight:700"></li>
   <li data-bind="foreach: filteredResultList(), click: listItemSelect" class="result">
     <div data-bind="text: name" class="resultTitle"></div>
@@ -59,6 +59,7 @@
 </ul>
   </div>
   <div id="mobileButton" data-bind="click: showInputWindow" class="infoWindow" style="display: none; opacity : 1; background-color: white"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button></div>
+  <div id="swanson" class="swanson"><img data-bind="click: swanson" src="assets/swanson.png" width="50" height="45" alt=""/></div>
 
 </body>
 <link rel="stylesheet" type="text/css" href="css/fonts.css">
@@ -71,7 +72,9 @@
 <script src="js/oauth/sha1.js"></script>
 <script src="js/yelp.js"></script>
 <script src="js/neighborhoodMap.js"></script>
+<script src="js/sweetalert/sweetalert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/sweetAlert/sweetalert.css">
 <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8TpKRraFO3Y2wiEw6caFzHcx4f8qclh4&callback=initializeMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8TpKRraFO3Y2wiEw6caFzHcx4f8qclh4&amp;callback=initializeMap">
     </script>
 </html>
