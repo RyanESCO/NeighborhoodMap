@@ -10,7 +10,10 @@
 
 <body>
 <div id="map"></div>
-<div id="informationWindow">
+<div id="informationWindow" class="infoWindow">
+<div style="position:absolute; top:0px; right: 0px"><button data-bind="click: hideInputWindow" class="mdl-button mdl-js-button mdl-button--icon">
+  <i class="material-icons">clear</i>
+</button></div>
 <div id="searchBar" class="mdl-shadow--8dp">
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="margin:0 20px">
     <input data-bind="value: searchLocation" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="5" id="zipInput" />
@@ -44,7 +47,7 @@
   </div>
 </div>
 
-<ul id="resultsCards" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: block">
+<ul id="resultsList" class="materialDesign mdl-shadow--8dp" style="margin-top:20px; display: block">
   <li data-bind="html: numResultsHTML" style="text-align: center; margin-top: 15px; font-weight:700"></li>
   <li data-bind="foreach: filteredResultList(), click: listItemSelect" class="result">
     <div data-bind="text: name" class="resultTitle"></div>
@@ -53,11 +56,10 @@
     <div data-bind="if:$data.display_phone"><div data-bind="text: display_phone "  class="listData"></div></div>
       <hr>
   </li>
-
-  </div>
 </ul>
-</div>
-</div>
+  </div>
+  <div id="mobileButton" data-bind="click: showInputWindow" class="infoWindow" style="display: none; opacity : 1; background-color: white"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button></div>
+
 </body>
 <link rel="stylesheet" type="text/css" href="css/fonts.css">
 <link rel="stylesheet" type="text/css" href="css/Material/material.min.css">

@@ -16,6 +16,13 @@ var NeighborHoodMapViewModel = function(){
       }
     }
     console.log('filtered out ' + (self.resultList().length - filterArray.length) + ' items');
+    if(resultList().length==0){
+      $('#resultsList').css('height','50px');  
+    }
+    else
+    {
+      adjustResultsListHeight();
+    }
     return filterArray;  
   
   });
@@ -162,6 +169,16 @@ var NeighborHoodMapViewModel = function(){
     
   };
   
+  self.hideInputWindow = function(){
+    $('#informationWindow').hide('slow');
+    $('#mobileButton').show('slow');  
+  };
+  
+  self.showInputWindow = function(){
+    $('#informationWindow').show('slow');
+    $('#mobileButton').hide('slow');  
+  };
+  
   self.displayMarkers = ko.computed(function(){
     //hide any existing markers
     self.clearMarkers(null);    
@@ -179,6 +196,9 @@ var NeighborHoodMapViewModel = function(){
                 
         (function(selectedResult, marker){
           marker.addListener('click', function() {
+            if(window.screen.width < 500){
+               self.hideInputWindow(); 
+            }
             clearMarkerAnimations();
             marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function(){ marker.setAnimation(null); }, 1500);
@@ -207,10 +227,22 @@ var NeighborHoodMapViewModel = function(){
    
   };
   
+  self.adjustResultsListHeight = function(){
+    
+    var availableHeight = $(window).height() - parseInt($('#searchBar').css('height')) - 50;
+    $('#resultsList').css('height',availableHeight);
+    
+    
+  };
+  
+  
   self.listItemSelect = function(data, event){
     var nameSelected = event.target.innerText;
     for(var i = 0; i < filteredResultList().length; i++){
       if( nameSelected === filteredResultList()[i].name){
+        if(window.screen.width < 500){
+           self.hideInputWindow(); 
+        }
         console.log(filteredResultList()[i]);
         var selectedResult = filteredResultList()[i];
         var selectedMarker = selectedResult.marker;

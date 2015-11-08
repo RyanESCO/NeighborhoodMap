@@ -26,11 +26,20 @@ html, body
   width: 80%;  
 }
 
-#informationWindow {
+.infoWindow {
   position: absolute;
   top: 10px; 
   left: 10px;
   opacity: .8; 
+}
+
+#resultsList {
+ width: 200px;
+ height: 50%;
+ background-color: white;
+ list-style:none;
+ padding-left:0;
+ overflow-y:scroll;
 }
 
 #resultsCards {
@@ -40,7 +49,6 @@ html, body
  background-color: white;
  list-style:none;
  padding-left:0;
- overflow-y:scroll ;
 }
 
 
